@@ -58,6 +58,28 @@ async function run() {
     })
 
 
+    // Update user role
+    app.put('/users/:id', async (req, res) => {
+      const id = req.params.id;
+      const { role } = req.body; 
+
+      try {
+        const query = { _id: new ObjectId(id) };
+        const update = { $set: { role: role } }; 
+        const result = await doctorUsersCollection.updateOne(query, update);
+
+        if (result.modifiedCount === 1) {
+          res.send({ message: "User role updated successfully." });
+        } else {
+          res.status(404).send({ message: "User not found or role is the same." });
+        }
+      } catch (error) {
+        console.error("Error updating role:", error);
+        res.status(500).send({ message: "Failed to update the role. Please try again." });
+      }
+    });
+
+
 
 
     // Send a ping to confirm a successful connection
