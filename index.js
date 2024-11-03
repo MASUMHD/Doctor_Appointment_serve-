@@ -44,10 +44,11 @@ async function run() {
 
     // get / show users
     app.get('/users', async (req, res) => {
-        const cursor = doctorUsersCollection.find({});
-        const result = await cursor.toArray();
-        res.send(result)
-    })
+      const email = req.query.email;
+      const query = email ? { email } : {};
+      const result = await doctorUsersCollection.find(query).toArray();
+      res.send(result);
+    });
 
     // delete users
     app.delete('/users/:id', async (req, res) => {
