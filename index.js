@@ -32,6 +32,7 @@ async function run() {
     // await client.connect();
 
     const doctorUsersCollection = client.db("Doc_House").collection("users");
+    const doctorServicesCollection = client.db("Doc_House").collection("Services");
 
 
     // add users
@@ -79,6 +80,29 @@ async function run() {
         res.status(500).send({ message: "Failed to update the role. Please try again." });
       }
     });
+
+    // add services
+    app.post('/services', async (req, res) => {
+        const newServices = req.body;
+        console.log('adding new service', newServices);
+        const result = await doctorServicesCollection.insertOne(newServices);
+        res.send(result)
+    })
+
+
+    // get / show services
+    app.get('/services', async (req, res) => {
+      const result = await doctorServicesCollection.find({}).toArray();
+      res.send(result);
+    });
+
+    // delete services
+    app.delete('/services/:id', async (req, res) => {
+        const id = req.params.id;
+        const query = { _id: new ObjectId(id) };
+        const result = await doctorServicesCollection.deleteOne(query);
+        res.send(result);
+    })
 
 
 
