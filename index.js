@@ -33,6 +33,7 @@ async function run() {
 
     const doctorUsersCollection = client.db("Doc_House").collection("users");
     const doctorServicesCollection = client.db("Doc_House").collection("Services");
+    const doctorServicesBookingCollection = client.db("Doc_House").collection("Bookings");
 
 
     // add users
@@ -132,12 +133,31 @@ async function run() {
             startTime: updatedServices.startTime,
             endTime: updatedServices.endTime,
             imageUrl: updatedServices.imageUrl,
-            doctor_fees: updatedServices.doctor_fees
+            doctor_fees: updatedServices.doctor_fees,
+            doctorName: updatedServices.doctorName
           },
         };
         const result = await doctorServicesCollection.updateOne(query, updateDoc, options);
         res.send(result);
     })
+
+
+
+    // Services Book information
+    app.post('/bookings', async (req, res) => {
+        const newBookings = req.body;
+        console.log('adding new booking', newBookings);
+        const result = await doctorServicesBookingCollection.insertOne(newBookings);
+        res.send(result)
+    })
+    
+    // get / show bookings by email
+    app.get('/bookings', async (req, res) => {
+      const email = req.query.email;
+      const query = email? { email } : {};
+      const result = await doctorServicesBookingCollection.find(query).toArray();
+      res.send(result);
+    });
 
 
 
