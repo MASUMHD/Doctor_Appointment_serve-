@@ -59,7 +59,6 @@ async function run() {
         res.send(result);
     })
 
-
     // Update user role
     app.put('/users/:id', async (req, res) => {
       const id = req.params.id;
@@ -81,6 +80,9 @@ async function run() {
       }
     });
 
+
+    
+
     // add services
     app.post('/services', async (req, res) => {
         const newServices = req.body;
@@ -89,11 +91,23 @@ async function run() {
         res.send(result)
     })
 
-
     // get / show services
     app.get('/services', async (req, res) => {
       const result = await doctorServicesCollection.find({}).toArray();
       res.send(result);
+    });
+
+    // get service by ID
+    app.get('/services/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const service = await doctorServicesCollection.findOne(query);
+      if (service) {
+        res.send(service);
+      } 
+      else {
+        res.status(404).send({ message: "Service not found" });
+      }
     });
 
     // delete services
