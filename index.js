@@ -164,11 +164,29 @@ async function run() {
       res.send(result);
     });
 
+    // delete booking
+    app.delete('/bookings/:id', async (req, res) => {
+        const id = req.params.id;
+        const query = { _id: new ObjectId(id) };
+        const result = await doctorServicesBookingCollection.deleteOne(query);
+        res.send(result);
+    })
 
-
+    // update booking status
+    app.put('/bookings/:id', async (req, res) => {
+        const id = req.params.id;
+        const updatedBooking = req.body;
+        const query = { _id: new ObjectId(id) };
+        const options = { upsert: true };
+        const updateDoc = {
+          $set: {
+            status: updatedBooking.status,
+          },
+        };
+        const result = await doctorServicesBookingCollection.updateOne(query, updateDoc, options);
+        res.send(result);
+    })
     
-
-
 
 
     // Send a ping to confirm a successful connection
