@@ -150,14 +150,23 @@ async function run() {
         const result = await doctorServicesBookingCollection.insertOne(newBookings);
         res.send(result)
     })
-    
-    // get / show bookings by email
+    // show all booking
     app.get('/bookings', async (req, res) => {
-      const email = req.query.email;
-      const query = email? { email } : {};
+      const result = await doctorServicesBookingCollection.find({}).toArray();
+      res.send(result);
+    });
+    
+    // get / show user email to show bookings
+    app.get('/bookings/:email', async (req, res) => {
+      const email = req.params.email;
+      const query = { 'userInfo.email': email }; 
       const result = await doctorServicesBookingCollection.find(query).toArray();
       res.send(result);
     });
+
+
+
+    
 
 
 
